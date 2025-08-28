@@ -3,1800 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VitalTip Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>On-Chain Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-
-        :root {
-            --bg-dark: #0e1121;
-            --sidebar-bg: #111828;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --accent: #2563eb;
-            --accent-light: #3b82f6;
-            --text: #f1f1f9;
-            --text-subtle: #b6b6d9;
-            --border: rgba(255,255,255,0.1);
-            --shadow: 0 10px 25px rgba(0,0,0,0.4);
-            --radius: 16px;
-            --error-color: #ff6b6b;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            background-color: #1c1c1c; /* A very dark gray */
+            color: #ffffff;
             display: flex;
-            height: 100vh;
-            overflow: hidden;
-            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
         }
-
-        .sidebar {
-            width: 240px;
-            background: var(--sidebar-bg);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 25px 15px;
-            border-right: 1px solid var(--border);
-            flex-shrink: 0;
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .sidebar-header {
-            text-align: left;
-            margin-bottom: 40px;
-        }
-        .sidebar-header h2 {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
-            margin: 0;
-        }
-
-        .nav-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .nav-menu li {
-            margin-bottom: 12px;
-        }
-        .nav-menu a {
-            display: block;
-            padding: 12px 18px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-subtle);
-            font-weight: 500;
-            transition: all 0.25s;
-            cursor: pointer;
-        }
-        .nav-menu a:hover {
-            background: var(--card-bg);
-            color: var(--text);
-        }
-        .nav-menu a.active {
-            background: var(--accent);
-            color: #fff;
-            font-weight: 600;
-        }
-
-        .nav-menu .faucet-link {
-            background: var(--accent);
-            color: #fff;
-            font-weight: 600;
-            text-align: center;
-            margin-top: 20px;
-            display: block;
-            border: 1px solid var(--accent-light);
-            text-shadow: 0 0 5px rgba(0,0,0,0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .nav-menu .faucet-link:hover {
-            background: var(--accent-light);
-        }
-
-        .user-section {
-            padding: 15px;
-            border-top: 1px solid var(--border);
-            font-size: 14px;
-            color: var(--text-subtle);
-        }
-        .user-section button {
-            margin-top: 10px;
+        .calculator-container {
             width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            cursor: pointer;
-            transition: 0.3s;
+            max-width: 20rem;
+            background-color: #2c2c2c; /* A slightly lighter dark gray */
+            border-radius: 1.5rem;
+            padding: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
         }
-        .user-section button:hover {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        .withdraw-button {
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 20px;
-        }
-
-        .withdraw-button:hover {
-            background-color: var(--accent-light);
-        }
-
-        .withdraw-button:disabled {
-            background-color: #666;
-            cursor: not-allowed;
-        }
-
-        .menu-button {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            background: linear-gradient(160deg, #1e293b, #0e1121);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        h2 {
-            margin-top: 0;
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--accent-light);
-        }
-
-        .dashboard-container {
+        .button-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
         }
-
-        .dashboard-description, .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(12px);
-            font-size: 16px;
-            line-height: 1.6;
+        .btn {
+            padding: 1rem 0;
+            border-radius: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-
-        .stat-card {
-            min-height: 120px;
-            text-align: center;
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-gray {
+            background-color: #4b4b4b; /* Darker gray for buttons */
+        }
+        .btn-gray:hover {
+            background-color: #5a5a5a;
+        }
+        .btn-orange {
+            background-color: #ff9500; /* Orange for operation buttons */
+            color: white;
+        }
+        .btn-orange:hover {
+            background-color: #e68a00;
+        }
+        .btn-blue {
+            background-color: #0a84ff; /* Blue for 'Connected' button */
+            color: white;
+            font-weight: bold;
+        }
+        .btn-blue:hover {
+            background-color: #0073e6;
+        }
+        .display {
+            background-color: #000000;
+            color: #ffffff;
+            font-size: 3rem;
+            font-weight: 300;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: right;
+            margin-bottom: 1rem;
+            min-height: 5rem;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .stat-value {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-subtle);
-        }
-
-        .withdraw-container {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-        input, button.submit-btn {
-            width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            border: none;
-            font-size: 15px;
-            margin-bottom: 15px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-        button.submit-btn {
-            background: var(--accent);
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button.submit-btn:hover {
-            background: var(--accent-light);
-        }
-        button.submit-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-        }
-
-        .history-section-title {
-            font-size: 18px;
-            color: var(--text);
-            margin-top: 20px;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            margin-top: 15px;
-            overflow-x: auto;
-            display: table;
-        }
-
-        .history-table thead {
-            background: rgba(255, 255, 255, 0.1);
-            display: table-header-group;
-        }
-
-        .history-table tr {
-            display: table-row;
-        }
-        .history-table tbody tr {
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .history-table tbody tr:last-child {
-            border-bottom: none;
-        }
-
-        .history-table th, .history-table td {
-            padding: 15px;
-            text-align: left;
-            display: table-cell;
-        }
-
-        .history-table thead tr th {
-            white-space: nowrap;
-        }
-
-        .history-table .explorer-link, .history-table .party-address {
-            color: var(--text);
-            text-decoration: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 120px;
-            display: inline-block;
-            cursor: pointer;
-        }
-        .history-table .explorer-link:hover, .history-table .party-address:hover {
-            color: var(--accent-light);
-            text-decoration: underline;
-        }
-
-        .history-table tbody tr {
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .history-table tbody tr:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .transaction-detail-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .transaction-detail-content {
-            background: var(--sidebar-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow);
-        }
-
-        .transaction-detail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
-        }
-
-        .transaction-detail-header h3 {
-            margin: 0;
-            color: var(--accent-light);
-            font-size: 20px;
-        }
-
-        .close-button {
-            background: none;
-            border: none;
-            color: var(--text-subtle);
-            font-size: 24px;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
-            transition: all 0.2s;
-        }
-
-        .close-button:hover {
-            background: var(--card-bg);
-            color: var(--text);
-        }
-
-        .transaction-detail-field {
-            margin-bottom: 15px;
-        }
-
-        .transaction-detail-label {
-            font-size: 14px;
-            color: var(--text-subtle);
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .transaction-detail-value {
-            color: var(--text);
-            font-size: 16px;
+            align-items: flex-end;
+            justify-content: flex-end;
             word-break: break-all;
         }
-
-        .transaction-detail-value.clickable {
-            color: var(--accent);
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        .transaction-detail-value.clickable:hover {
-            color: var(--accent-light);
-        }
-
-        .description-field {
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            color: var(--text-subtle);
-            font-style: italic;
-            min-height: 60px;
-        }
-
-        .signature {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 13px;
-            color: var(--text-subtle);
-        }
-        .signature a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        .content-section {
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        .mobile-wallet-container {
-            display: none;
-            justify-content: flex-end;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .error-message {
-            color: var(--error-color);
-            margin-top: 10px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .dropdown-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .dropdown-button {
-            width: 100%;
-            padding: 14px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: left;
-            transition: border-color 0.2s;
-            font-size: 15px;
-        }
-
-        .dropdown-button:hover {
-            border-color: var(--accent);
-        }
-
-        .dropdown-icon {
-            margin-left: 8px;
-            transition: transform 0.2s ease;
-        }
-
-        .dropdown-list-container {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            background: var(--sidebar-bg);
-            border: 1px solid var(--border);
-            border-radius: 0 0 10px 10px;
-            box-shadow: var(--shadow);
-            z-index: 10;
-            display: none;
-            padding: 8px 0;
-            margin-top: -1px;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .dropdown-list-container.open {
-            display: flex;
-        }
-
-        .dropdown-list-item {
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 0;
-            transition: background-color 0.2s ease;
-            font-size: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-
-        .dropdown-list-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .dropdown-list-item.selected {
-            background-color: var(--accent);
-            color: #fff;
-        }
-
-        .dropdown-container.open .dropdown-icon {
-            transform: rotate(180deg);
-        }
-
-        .token-search {
-            width: calc(100% - 30px);
-            padding: 10px 12px;
-            margin: 8px 15px;
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            font-family: inherit;
-        }
-
-        .token-search::placeholder {
-            color: var(--text-subtle);
-        }
-
-        .token-search:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .search-result-item {
-            display: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 0;
-            background-color: rgba(255, 255, 255, 0.1);
-            font-size: 15px;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: nowrap;
-            gap: 10px;
-        }
-        .search-result-item.show {
-            display: flex;
-        }
-        .search-result-item span {
-            flex: 1;
-            white-space: nowrap;
+        .display-previous {
+            font-size: 1.5rem;
+            color: #a0a0a0;
+            min-height: 2rem;
             overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        .search-result-item .add-btn {
-            background: var(--accent);
-            color: #fff;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .search-result-item .add-btn:hover {
-            background: var(--accent-light);
-        }
-        .add-token-status {
-            font-size: 12px;
-            color: var(--text-subtle);
-            padding-left: 15px;
-            margin-top: 5px;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 280px;
-                transform: translateX(-100%);
-                z-index: 100;
-            }
-
-            body.menu-open .sidebar {
-                transform: translateX(0);
-            }
-            
-            body.menu-open .main-content {
-                transform: translateX(280px);
-                transition: transform 0.3s ease-in-out;
-            }
-
-            .main-content {
-                padding: 20px;
-                transition: transform 0.3s ease-in-out;
-            }
-            
-            .menu-button {
-                display: block;
-            }
-
-            .sidebar .user-section {
-                display: none;
-            }
-
-            .mobile-wallet-container {
-                display: flex;
-            }
-            
-            .mobile-wallet-container .wallet-address-display {
-                font-size: 14px;
-                color: var(--text-subtle);
-                margin-right: 10px;
-            }
-            .mobile-wallet-container .connect-disconnect-btn {
-                padding: 8px 12px;
-                border-radius: 8px;
-                background: var(--card-bg);
-                border: 1px solid var(--border);
-                color: var(--text);
-                cursor: pointer;
-                transition: 0.3s;
-            }
-
-            .history-table {
-                font-size: 14px;
-            }
+        .display-current {
+            font-size: 3rem;
+            color: #00e500;
+            min-height: 3rem;
+            overflow: hidden;
+            white-space: nowrap;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
-    <button class="menu-button" id="menu-button">&#9776; Menu</button>
-    <div class="sidebar" id="sidebar">
-        <div>
-            <div class="sidebar-header">
-                <h2>VitalTip</h2>
-                <p style="font-size:12px;color:var(--text-subtle)">Built on PHAROS</p>
-            </div>
-            <ul class="nav-menu">
-                <li><a data-page="dashboard" class="active">Dashboard</a></li>
-                <li><a data-page="tip">Send Tip</a></li>
-                <li><a data-page="history">History</a></li>
-                <li><a href="https://testnet.dplabs-internal.com/" target="_blank" class="faucet-link">Claim Faucet</a></li>
-            </ul>
-        </div>
-        <div class="user-section">
-            Connected: <span class="wallet-address-display">Not Connected</span>
-            <button class="connect-disconnect-btn">Connect Wallet</button>
-        </div>
-    </div>
+    <div class="calculator-container">
 
-    <div class="main-content">
-        <div class="mobile-wallet-container">
-            <span class="wallet-address-display">Not Connected</span>
-            <button class="connect-disconnect-btn">Connect Wallet</button>
-        </div>
-        
-        <div id="dashboard-page" class="content-section active">
-            <h2>Dashboard</h2>
-            <div class="dashboard-container" id="dashboard-container">
-                <div class="dashboard-description">
-                    <p>This decentralized application allows anyone to send small tips to a recipient's wallet address. It's a simple, effective tool to encourage community engagement and reward contributors directly on the blockchain.</p>
-                </div>
-                <div class="stat-card" id="no-claimable-tokens" style="display: none;">
-                    <div class="stat-value">0.00</div>
-                    <div class="stat-label">No Claimable Tokens</div>
-                </div>
-                <div class="stat-card">
-                    <div id="tips-received-count-card" class="stat-value">0</div>
-                    <div class="stat-label">Tips Received (Count)</div>
-                </div>
-                <div class="stat-card">
-                    <div id="total-sent" class="stat-value">0</div>
-                    <div class="stat-label">Total Tips Sent</div>
-                </div>
-            </div>
-            <div class="withdraw-container">
-                <button id="withdrawButton" class="withdraw-button" disabled>Withdraw All Tips</button>
-                <div id="dashboard-status" style="margin-top: 15px; font-size: 14px;"></div>
-            </div>
+        <!-- Connection Status -->
+        <div class="w-full mb-4">
+            <button id="connect-wallet-btn" class="w-full btn btn-blue flex items-center justify-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>Connect Wallet</span>
+            </button>
         </div>
 
-        <div id="tip-page" class="content-section">
-            <h2>Send a Tip</h2>
-            <div class="form-group">
-                <input type="text" id="recipientAddress" placeholder="Recipient's wallet address" />
-                
-                <div class="dropdown-container" id="token-dropdown">
-                    <button class="dropdown-button" id="dropdown-button">
-                        <span id="selected-token-display">PHRS (Native)</span>
-                        <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div class="dropdown-list-container" id="token-list-container">
-                        <input type="text" id="token-search" class="token-search" placeholder="Search tokens or paste contract address...">
-                        <div id="search-result-item" class="search-result-item">
-                            <span id="search-result-name"></span>
-                            <button class="add-btn">Add</button>
-                        </div>
-                        <div class="dropdown-list" id="token-list">
-                            <div class="dropdown-list-item selected" data-value="0x0000000000000000000000000000000000000000" data-name="PHRS">PHRS (Native)</div>
-                        </div>
-                    </div>
-                </div>
-
-                <input type="number" id="tipAmount" placeholder="Amount to tip" min="0.001" step="0.001" />
-                
-                <textarea
-                    id="tipDescription"
-                    placeholder="Optional: Add a description for this tip"
-                    rows="3"
-                    style="
-                        width: 100%;
-                        padding: 14px;
-                        border-radius: 10px;
-                        border: 1px solid var(--border);
-                        background-color: var(--card-bg);
-                        color: var(--text);
-                        font-size: 15px;
-                        margin-bottom: 15px;
-                        font-family: inherit;
-                        resize: vertical;
-                    "
-                ></textarea>
-                
-                <button id="tipButton" class="submit-btn" disabled>Send Tip</button>
-                <div id="status"></div>
-                <div id="self-tip-message" class="error-message" style="display:none;"></div>
-            </div>
+        <!-- Calculator Display -->
+        <div class="display">
+            <span id="display-previous" class="display-previous"></span>
+            <span id="display-current" class="display-current">0</span>
         </div>
 
-        <div id="history-page" class="content-section">
-            <h2>All Transactions</h2>
+        <!-- Calculator Buttons Grid -->
+        <div class="button-grid">
+            <button class="btn btn-gray" id="clear-btn">C</button>
+            <button class="btn btn-gray" id="backspace-btn">⌫</button>
+            <button class="btn btn-orange" data-op="mod">%</button>
+            <button class="btn btn-orange" data-op="div">÷</button>
             
-            <div id="all-history-status" style="font-size: 14px; margin-bottom: 10px;">Connect your wallet to see history.</div>
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Party</th>
-                        <th>Tx Hash</th>
-                    </tr>
-                </thead>
-                <tbody id="all-history-table-body"></tbody>
-            </table>
+            <button class="btn btn-gray" data-val="7">7</button>
+            <button class="btn btn-gray" data-val="8">8</button>
+            <button class="btn btn-gray" data-val="9">9</button>
+            <button class="btn btn-orange" data-op="mul">×</button>
+            
+            <button class="btn btn-gray" data-val="4">4</button>
+            <button class="btn btn-gray" data-val="5">5</button>
+            <button class="btn btn-gray" data-val="6">6</button>
+            <button class="btn btn-orange" data-op="sub">-</button>
+            
+            <button class="btn btn-gray" data-val="1">1</button>
+            <button class="btn btn-gray" data-val="2">2</button>
+            <button class="btn btn-gray" data-val="3">3</button>
+            <button class="btn btn-orange" data-op="add">+</button>
+            
+            <button class="btn btn-gray col-span-2" data-val="0">0</button>
+            <button class="btn btn-gray" data-val=".">.</button>
+            <button class="btn btn-orange" id="calculate-btn">=</button>
         </div>
 
-        <!-- Transaction Detail Modal -->
-        <div id="transaction-detail-modal" class="transaction-detail-modal" style="display: none;">
-            <div class="transaction-detail-content">
-                <div class="transaction-detail-header">
-                    <h3>Transaction Details</h3>
-                    <button class="close-button" id="close-modal">&times;</button>
-                </div>
-                
-                <div class="transaction-detail-field">
-                    <div class="transaction-detail-label">Time and Date</div>
-                    <div class="transaction-detail-value" id="modal-time"></div>
-                </div>
-                
-                <div class="transaction-detail-field">
-                    <div class="transaction-detail-label">Transaction ID</div>
-                    <div class="transaction-detail-value clickable" id="modal-tx-hash"></div>
-                </div>
-                
-                <div class="transaction-detail-field">
-                    <div class="transaction-detail-label">Type</div>
-                    <div class="transaction-detail-value" id="modal-type"></div>
-                </div>
-                
-                <div class="transaction-detail-field">
-                    <div class="transaction-detail-label">Amount</div>
-                    <div class="transaction-detail-value" id="modal-amount"></div>
-                </div>
-                
-                <div class="transaction-detail-field" id="modal-party-field">
-                    <div class="transaction-detail-label" id="modal-party-label">Party</div>
-                    <div class="transaction-detail-value clickable" id="modal-party"></div>
-                </div>
-                
-                <div class="transaction-detail-field" id="modal-description-field">
-                    <div class="transaction-detail-label" id="modal-description-label">Description</div>
-                    <div class="description-field" id="modal-description"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="signature">
-            Made with ♥ by <a href="https://x.com/Jrken_ny" target="_blank">Jrkenny</a>
-        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <!-- Ethers.js library import -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Smart Contract details
-            const CONTRACT_ADDRESS = "0x41a09d3bf621f4a6c196a1183a2eea55046d64c0";
-            const contractAddress = CONTRACT_ADDRESS;
-            const contractABI = [
-                {
-                    "inputs": [
-                        {
-                            "internalType": "address",
-                            "name": "_recipient",
-                            "type": "address"
-                        },
-                        {
-                            "internalType": "address",
-                            "name": "_token",
-                            "type": "address"
-                        }
-                    ],
-                    "name": "sendTip",
-                    "outputs": [],
-                    "stateMutability": "payable",
-                    "type": "function"
-                },
-                {
-                    "inputs": [
-                        {
-                            "internalType": "address",
-                            "name": "_token",
-                            "type": "address"
-                        }
-                    ],
-                    "name": "withdrawTips",
-                    "outputs": [],
-                    "stateMutability": "nonpayable",
-                    "type": "function"
-                },
-                {
-                    "anonymous": false,
-                    "inputs": [
-                        {
-                            "indexed": true,
-                            "internalType": "address",
-                            "name": "tipper",
-                            "type": "address"
-                        },
-                        {
-                            "indexed": true,
-                            "internalType": "address",
-                            "name": "recipient",
-                            "type": "address"
-                        },
-                        {
-                            "indexed": true,
-                            "internalType": "address",
-                            "name": "token",
-                            "type": "address"
-                        },
-                        {
-                            "indexed": false,
-                            "internalType": "uint256",
-                            "name": "amount",
-                            "type": "uint256"
-                        }
-                    ],
-                    "name": "TipSent",
-                    "type": "event"
-                },
-                {
-                    "anonymous": false,
-                    "inputs": [
-                        {
-                            "indexed": true,
-                            "internalType": "address",
-                            "name": "recipient",
-                            "type": "address"
-                        },
-                        {
-                            "indexed": true,
-                            "internalType": "address",
-                            "name": "token",
-                            "type": "address"
-                        },
-                        {
-                            "indexed": false,
-                            "internalType": "uint256",
-                            "name": "amount",
-                            "type": "uint256"
-                        }
-                    ],
-                    "name": "TipsWithdrawn",
-                    "type": "event"
-                },
-                {
-                    "inputs": [
-                        {
-                            "internalType": "address",
-                            "name": "",
-                            "type": "address"
-                        },
-                        {
-                            "internalType": "address",
-                            "name": "",
-                            "type": "address"
-                        }
-                    ],
-                    "name": "balances",
-                    "outputs": [
-                        {
-                            "internalType": "uint256",
-                            "name": "",
-                            "type": "uint256"
-                        }
-                    ],
-                    "stateMutability": "view",
-                    "type": "function"
-                },
-                {
-                    "inputs": [
-                        {
-                            "internalType": "address",
-                            "name": "_recipient",
-                            "type": "address"
-                        },
-                        {
-                            "internalType": "address",
-                            "name": "_token",
-                            "type": "address"
-                        }
-                    ],
-                    "name": "getTippableBalance",
-                    "outputs": [
-                        {
-                            "internalType": "uint256",
-                            "name": "",
-                            "type": "uint256"
-                        }
-                    ],
-                    "stateMutability": "view",
-                    "type": "function"
-                }
+        // Immediately invoked async function to encapsulate the script
+        (async function() {
+            // Contract details
+            const CONTRACT_ADDRESS = '0x0640761a8AaF04Ef63708789189b8beD47AA338A';
+            const CONTRACT_ABI = [
+                "event CalcInt(address indexed user, string op, int256 a, int256 b, int256 result)",
+                "event CalcFixed(address indexed user, string op, int256 a, int256 b, int256 result)",
+                "function add(int256 a, int256 b) external returns (int256 r)",
+                "function sub(int256 a, int256 b) external returns (int256 r)",
+                "function mul(int256 a, int256 b) external returns (int256 r)",
+                "function div(int256 a, int256 b) external returns (int256 r)",
+                "function mod(int256 a, int256 b) external returns (int256 r)",
+                "function iMin(int256 a, int256 b) external returns (int256 r)",
+                "function iMax(int256 a, int256 b) external returns (int256 r)",
+                "function iAvg(int256 a, int256 b) external returns (int256 r)",
+                "function percent(int256 a, int256 pct) external returns (int256 r)",
+                "function fAdd(int256 a, int256 b) external returns (int256 r)",
+                "function fSub(int256 a, int256 b) external returns (int256 r)",
+                "function fMul(int256 a, int256 b) external returns (int256 r)",
+                "function fDiv(int256 a, int256 b) external returns (int256 r)",
             ];
+            const SCALE = 1e18;
 
-            const ERC20_ABI = [
-                "function approve(address spender, uint256 amount) returns (bool)",
-                "function decimals() view returns (uint8)",
-                "function symbol() view returns (string)",
-                "function name() view returns (string)",
-                "function transfer(address to, uint256 amount) returns (bool)",
-                "function balanceOf(address account) view returns (uint256)",
-                "function allowance(address owner, address spender) view returns (uint256)"
-            ];
+            // DOM elements
+            const connectBtn = document.getElementById('connect-wallet-btn');
+            const displayPrevious = document.getElementById('display-previous');
+            const displayCurrent = document.getElementById('display-current');
+            const allButtons = document.querySelectorAll('.btn');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const backspaceBtn = document.getElementById('backspace-btn');
 
-            // Ethers.js provider and signer variables
-            let provider;
-            let signer;
-            let tipJarContract;
-            let userAddress = null;
+            let provider, signer, contract, userAddress;
+            let currentNumber = '0';
+            let previousNumber = '';
+            let operation = null;
+            let waitingForNext = false;
 
-            // Network details for Pharos Testnet
-            const PHAROS_NETWORK_DETAILS = {
-                chainId: "0x0A82B0", // Hexadecimal for 688688
-                chainName: "PHAROS TESTNET",
-                nativeCurrency: {
-                    name: "PHAROS",
-                    symbol: "PHRS",
-                    decimals: 18
-                },
-                rpcUrls: ["https://testnet.dplabs-internal.com"],
-                blockExplorerUrls: ["https://testnet.pharosscan.xyz"]
+            const operations = {
+                add: "+", sub: "-", mul: "×", div: "÷", mod: "%",
+                iMin: "min", iMax: "max", iAvg: "avg", percent: "%",
+                fAdd: "+", fSub: "-", fMul: "×", fDiv: "÷",
             };
 
-            // DOM element references
-            const recipientInput = document.getElementById("recipientAddress");
-            const amountInput = document.getElementById("tipAmount");
-            const descriptionInput = document.getElementById("tipDescription");
-            const tipButton = document.getElementById("tipButton");
-            const withdrawButton = document.getElementById("withdrawButton");
-            const statusDiv = document.getElementById("status");
-            const selfTipMessage = document.getElementById("self-tip-message");
-            const dashboardStatusDiv = document.getElementById("dashboard-status");
-            
-            const allHistoryTableBody = document.getElementById("all-history-table-body");
-            const allHistoryStatus = document.getElementById("all-history-status");
-
-            const dashboardContainer = document.getElementById("dashboard-container");
-            const noClaimableTokensCard = document.getElementById("no-claimable-tokens");
-            const tipsReceivedCountDisplay = document.getElementById("tips-received-count-card");
-            const totalSentDisplay = document.getElementById("total-sent");
-
-            const navLinks = document.querySelectorAll(".nav-menu a[data-page]");
-            const contentSections = document.querySelectorAll(".content-section");
-            const menuButton = document.getElementById("menu-button");
-            const sidebar = document.getElementById("sidebar");
-            const body = document.body;
-
-            const walletDisplays = document.querySelectorAll(".wallet-address-display");
-            const connectDisconnectBtns = document.querySelectorAll(".connect-disconnect-btn");
-            
-            // Modal elements
-            const transactionModal = document.getElementById("transaction-detail-modal");
-            const closeModalBtn = document.getElementById("close-modal");
-            const modalTime = document.getElementById("modal-time");
-            const modalTxHash = document.getElementById("modal-tx-hash");
-            const modalType = document.getElementById("modal-type");
-            const modalAmount = document.getElementById("modal-amount");
-            const modalPartyField = document.getElementById("modal-party-field");
-            const modalPartyLabel = document.getElementById("modal-party-label");
-            const modalParty = document.getElementById("modal-party");
-            const modalDescriptionField = document.getElementById("modal-description-field");
-            const modalDescriptionLabel = document.getElementById("modal-description-label");
-            const modalDescription = document.getElementById("modal-description");
-            
-            // New dropdown DOM elements
-            const tokenDropdown = document.getElementById("token-dropdown");
-            const dropdownButton = document.getElementById("dropdown-button");
-            const tokenListContainer = document.getElementById("token-list-container");
-            const tokenList = document.getElementById("token-list");
-            const tokenSearch = document.getElementById("token-search");
-            const selectedTokenDisplay = document.getElementById("selected-token-display");
-
-            // Elements for dynamic search result
-            const searchResultItem = document.getElementById("search-result-item");
-            const searchResultName = document.getElementById("search-result-name");
-            const addTokenButton = searchResultItem.querySelector('.add-btn');
-
-            let selectedTokenAddress = "0x0000000000000000000000000000000000000000";
-            const CUSTOM_TOKENS_STORAGE_KEY = 'customTokens';
-            const PAGE_STORAGE_KEY = 'lastPage';
-            
-            // A central array to keep track of tokens, including the native one
-            let allAvailableTokens = [{ address: "0x0000000000000000000000000000000000000000", symbol: "PHRS", native: true }];
-
-            // --- UI Logic ---
-            // Function to handle page navigation
-            function showPage(pageId) {
-                localStorage.setItem(PAGE_STORAGE_KEY, pageId);
-
-                contentSections.forEach(s => s.classList.remove("active"));
-                document.getElementById(pageId).classList.add("active");
-                
-                navLinks.forEach(l => l.classList.remove("active"));
-                const activeLink = document.querySelector(`.nav-menu a[data-page="${pageId.replace('-page', '')}"]`);
-                if (activeLink) {
-                    activeLink.classList.add("active");
-                }
-
-                if (window.innerWidth <= 768) {
-                    body.classList.remove("menu-open");
-                }
-            }
-            
-            // Event listener for mobile menu button
-            menuButton.addEventListener("click", () => {
-                body.classList.toggle("menu-open");
-            });
-
-            // Event listeners for navigation links
-            navLinks.forEach(link => {
-                link.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const page = link.getAttribute('data-page');
-                    showPage(`${page}-page`);
-                });
-            });
-            
-            // Event listeners for connect/disconnect buttons
-            connectDisconnectBtns.forEach(btn => {
-                btn.onclick = (e) => {
-                    e.preventDefault();
-                    if (userAddress) {
-                        disconnectWallet();
-                    } else {
-                        connectWallet();
-                    }
-                };
-            });
-            
-            // Modal event listeners
-            closeModalBtn.addEventListener('click', () => {
-                transactionModal.style.display = 'none';
-            });
-
-            transactionModal.addEventListener('click', (e) => {
-                if (e.target === transactionModal) {
-                    transactionModal.style.display = 'none';
-                }
-            });
-            
-            // Event listener for transaction history table
-            allHistoryTableBody.addEventListener('click', (e) => {
-                const row = e.target.closest('tr');
-                if (!row) return;
-
-                // Prevent modal from opening if clicking on a link
-                if (e.target.tagName === 'A' || e.target.closest('a')) {
-                    return;
-                }
-
-                const transactionData = row.transactionData;
-                if (transactionData) {
-                    showTransactionDetail(transactionData);
-                }
-            });
-
-            function showTransactionDetail(transaction) {
-                const formatDate = (timestamp) => {
-                    return new Date(timestamp * 1000).toLocaleString();
-                };
-
-                modalTime.textContent = formatDate(transaction.timestamp);
-                modalTxHash.textContent = transaction.txHash || 'N/A';
-                modalTxHash.onclick = () => {
-                    if (transaction.txHash) {
-                        window.open(`${PHAROS_NETWORK_DETAILS.blockExplorerUrls[0]}/tx/${transaction.txHash}`, '_blank');
-                    }
-                };
-                modalType.textContent = transaction.type;
-                modalAmount.textContent = `${parseFloat(transaction.amount).toFixed(4)} ${transaction.token}`;
-
-                // Handle party information
-                let partyAddress = '';
-                let partyLabel = '';
-                
-                if (transaction.to === 'Withdrawn') {
-                    modalPartyField.style.display = 'none';
-                } else {
-                    modalPartyField.style.display = 'block';
-                    if (transaction.type === 'Sent') {
-                        partyAddress = transaction.to;
-                        partyLabel = 'Recipient';
-                    } else {
-                        partyAddress = transaction.from;
-                        partyLabel = 'Sender';
-                    }
-                    modalPartyLabel.textContent = partyLabel;
-                    modalParty.textContent = partyAddress;
-                    modalParty.onclick = () => {
-                        window.open(`${PHAROS_NETWORK_DETAILS.blockExplorerUrls[0]}/address/${partyAddress}`, '_blank');
-                    };
-                }
-
-                // Handle description
-                if (transaction.description && transaction.description.trim()) {
-                    modalDescriptionField.style.display = 'block';
-                    if (transaction.type === 'Sent') {
-                        modalDescriptionLabel.textContent = 'Your Description';
-                    } else {
-                        modalDescriptionLabel.textContent = 'Description from Sender';
-                    }
-                    modalDescription.textContent = transaction.description;
-                } else if (transaction.type !== 'Withdrawn') {
-                    modalDescriptionField.style.display = 'block';
-                    modalDescriptionLabel.textContent = 'Description';
-                    modalDescription.textContent = 'No description provided';
-                } else {
-                    modalDescriptionField.style.display = 'none';
-                }
-
-                transactionModal.style.display = 'flex';
-            }
-            
-            // Dropdown & Token Logic
-            const loadCustomTokens = () => {
-                const storedTokens = JSON.parse(localStorage.getItem(CUSTOM_TOKENS_STORAGE_KEY) || '[]');
-                allAvailableTokens = [...allAvailableTokens.filter(t => t.native), ...storedTokens];
-                renderTokenList();
+            // Helper to update the UI message
+            const showMessage = (message, isError = false) => {
+                // For this version, we will just log to the console
+                console.log(isError ? "ERROR: " + message : "STATUS: " + message);
             };
 
-            const saveCustomTokens = (tokens) => {
-                localStorage.setItem(CUSTOM_TOKENS_STORAGE_KEY, JSON.stringify(tokens));
+            // Function to format fixed-point numbers
+            const formatFixed = (value) => {
+                if (!value) return "0";
+                const num = Number(value) / SCALE;
+                return num.toFixed(6).replace(/\.?0+$/, "");
             };
 
-            const renderTokenList = () => {
-                tokenList.innerHTML = "";
-                allAvailableTokens.forEach(token => {
-                    const newListItem = document.createElement("div");
-                    newListItem.classList.add("dropdown-list-item");
-                    newListItem.setAttribute("data-value", token.address);
-                    newListItem.setAttribute("data-name", token.symbol);
-                    newListItem.textContent = token.symbol + (token.native ? ' (Native)' : '');
-                    tokenList.appendChild(newListItem);
-                });
-            };
-
-            dropdownButton.addEventListener("click", (e) => {
-                e.stopPropagation();
-                tokenListContainer.classList.toggle("open");
-                if (tokenListContainer.classList.contains("open")) {
-                    tokenSearch.focus();
-                }
-            });
-
-            // Search functionality
-            tokenSearch.addEventListener("input", async (e) => {
-                const searchValue = e.target.value.trim();
-                const listItems = tokenList.querySelectorAll(".dropdown-list-item");
-                searchResultItem.classList.remove('show');
-                
-                listItems.forEach(item => {
-                    const text = item.getAttribute('data-name').toLowerCase();
-                    if (text.includes(searchValue.toLowerCase())) {
-                        item.style.display = "flex";
-                    } else {
-                        item.style.display = "none";
-                    }
-                });
-                
-                if (ethers.utils.isAddress(searchValue)) {
-                    const existingItem = allAvailableTokens.some(t => t.address.toLowerCase() === searchValue.toLowerCase());
-                    if (existingItem) {
-                        return;
-                    }
-                    
-                    try {
-                        const tokenContract = new ethers.Contract(searchValue, ERC20_ABI, provider);
-                        const tokenSymbol = await tokenContract.symbol();
-                        
-                        searchResultName.textContent = tokenSymbol;
-                        searchResultItem.classList.add('show');
-                        addTokenButton.setAttribute('data-address', searchValue);
-                        addTokenButton.setAttribute('data-symbol', tokenSymbol);
-                    } catch (error) {
-                        console.error("Error fetching token:", error);
-                        searchResultItem.classList.remove('show');
-                    }
-                }
-            });
-
-            // Handle token selection from the main list
-            tokenList.addEventListener("click", (e) => {
-                const clickedItem = e.target.closest(".dropdown-list-item");
-                if (clickedItem) {
-                    const address = clickedItem.getAttribute("data-value");
-                    const name = clickedItem.getAttribute("data-name");
-                    selectToken(address, name);
-                }
-            });
-
-            const selectToken = (address, name) => {
-                selectedTokenAddress = address;
-                selectedTokenDisplay.textContent = name + (address === "0x0000000000000000000000000000000000000000" ? ' (Native)' : '');
-                
-                const allItems = tokenList.querySelectorAll(".dropdown-list-item");
-                allItems.forEach(item => item.classList.remove("selected"));
-                
-                const selectedItem = tokenList.querySelector(`[data-value="${address.toLowerCase()}"]`);
-                if (selectedItem) {
-                    selectedItem.classList.add("selected");
-                }
-                
-                tokenListContainer.classList.remove("open");
-            };
-            
-            // Handle clicking the "Add" button on the search result
-            addTokenButton.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const tokenAddress = addTokenButton.getAttribute('data-address');
-                const tokenSymbol = addTokenButton.getAttribute('data-symbol');
-                
-                const storedTokens = JSON.parse(localStorage.getItem(CUSTOM_TOKENS_STORAGE_KEY) || '[]');
-                const isNew = !storedTokens.some(t => t.address.toLowerCase() === tokenAddress.toLowerCase());
-                
-                if (isNew) {
-                    storedTokens.push({ address: tokenAddress, symbol: tokenSymbol });
-                    saveCustomTokens(storedTokens);
-                }
-                
-                loadCustomTokens();
-                selectToken(tokenAddress, tokenSymbol);
-
-                searchResultItem.classList.remove('show');
-                tokenSearch.value = "";
-            });
-            
-            document.addEventListener("click", (e) => {
-                if (!tokenDropdown.contains(e.target) && !menuButton.contains(e.target)) {
-                    tokenListContainer.classList.remove("open");
-                }
-            });
-            
-            // --- Wallet and Ethers.js Logic ---
-            function initializeContract() {
+            // Function to handle wallet connection
+            const connectWallet = async () => {
                 if (typeof window.ethereum === 'undefined') {
-                    walletDisplays.forEach(el => el.innerText = "MetaMask not found.");
-                    return false;
-                }
-
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                signer = provider.getSigner();
-                tipJarContract = new ethers.Contract(contractAddress, contractABI, signer);
-                return true;
-            }
-            
-            async function checkIfWalletIsConnected() {
-                if (typeof window.ethereum !== 'undefined' && window.ethereum.isConnected()) {
-                    try {
-                        const accounts = await provider.listAccounts();
-                        if (accounts.length > 0) {
-                            userAddress = accounts[0];
-                            walletDisplays.forEach(el => el.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38));
-                            connectDisconnectBtns.forEach(btn => btn.innerText = "Disconnect");
-                            fetchDataAndHistory();
-                            setupEventListeners();
-                        } else {
-                            userAddress = null;
-                            walletDisplays.forEach(el => el.innerText = "Not Connected");
-                            connectDisconnectBtns.forEach(btn => btn.innerText = "Connect Wallet");
-                            clearDashboardData();
-                            clearHistory();
-                            setupEventListeners();
-                        }
-                    } catch (error) {
-                        console.error("Error checking for connected wallet:", error);
-                        userAddress = null;
-                        walletDisplays.forEach(el => el.innerText = "Not Connected");
-                        connectDisconnectBtns.forEach(btn => btn.innerText = "Connect Wallet");
-                        clearDashboardData();
-                        clearHistory();
-                    }
-                } else {
-                    userAddress = null;
-                    walletDisplays.forEach(el => el.innerText = "Not Connected");
-                    connectDisconnectBtns.forEach(btn => btn.innerText = "Connect Wallet");
-                    clearDashboardData();
-                    clearHistory();
-                }
-            }
-
-            async function connectWallet() {
-                try {
-                    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-                    if (chainId !== PHAROS_NETWORK_DETAILS.chainId) {
-                        try {
-                            await window.ethereum.request({
-                                method: 'wallet_addEthereumChain',
-                                params: [PHAROS_NETWORK_DETAILS],
-                            });
-                        } catch (addError) {
-                            statusDiv.textContent = "Failed to add the network. Please add it manually.";
-                            return;
-                        }
-                    }
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    userAddress = accounts[0];
-                    walletDisplays.forEach(el => el.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38));
-                    connectDisconnectBtns.forEach(btn => btn.innerText = "Disconnect");
-                    fetchDataAndHistory();
-                } catch (error) {
-                    console.error("User denied account access or other error:", error);
-                    statusDiv.textContent = "Connection failed. Please try again.";
-                }
-            }
-
-            async function disconnectWallet() {
-                userAddress = null;
-                walletDisplays.forEach(el => el.innerText = "Not Connected");
-                connectDisconnectBtns.forEach(btn => btn.innerText = "Connect Wallet");
-                clearDashboardData();
-                clearHistory();
-            }
-
-            async function fetchDataAndHistory() {
-                if (!userAddress || !tipJarContract) return;
-
-                // Fetch claimable tokens
-                await fetchClaimableTokens();
-                
-                // Fetch tip counts
-                let tipsReceivedCount = 0;
-                let totalSentCount = 0;
-
-                try {
-                    const tipSentFilter = tipJarContract.filters.TipSent();
-                    const logs = await provider.getLogs({
-                        address: tipJarContract.address,
-                        topics: tipSentFilter.topics,
-                        fromBlock: 0
-                    });
-
-                    for (const log of logs) {
-                        const parsedLog = tipJarContract.interface.parseLog(log);
-                        if (parsedLog.args.recipient.toLowerCase() === userAddress.toLowerCase()) {
-                            tipsReceivedCount++;
-                        }
-                        if (parsedLog.args.tipper.toLowerCase() === userAddress.toLowerCase()) {
-                            totalSentCount++;
-                        }
-                    }
-
-                    tipsReceivedCountDisplay.textContent = tipsReceivedCount;
-                    totalSentDisplay.textContent = totalSentCount;
-                } catch (error) {
-                    console.error("Error fetching tips counts:", error);
-                }
-                
-                await fetchAllHistory();
-            }
-
-            async function fetchClaimableTokens() {
-                const claimableTokens = [];
-                const processedTokens = new Set();
-
-                try {
-                    // Get all tip events where user is recipient
-                    const tipSentFilter = tipJarContract.filters.TipSent(null, userAddress, null);
-                    const logs = await provider.getLogs({
-                        address: tipJarContract.address,
-                        topics: tipSentFilter.topics,
-                        fromBlock: 0
-                    });
-
-                    // Collect unique token addresses
-                    const tokenAddresses = new Set();
-                    for (const log of logs) {
-                        const parsedLog = tipJarContract.interface.parseLog(log);
-                        tokenAddresses.add(parsedLog.args.token);
-                    }
-
-                    // Check balance for each token
-                    for (const tokenAddress of tokenAddresses) {
-                        if (processedTokens.has(tokenAddress)) continue;
-                        processedTokens.add(tokenAddress);
-
-                        const balance = await tipJarContract.getTippableBalance(userAddress, tokenAddress);
-                        
-                        if (balance.gt(0)) {
-                            let tokenSymbol = 'PHRS';
-                            if (tokenAddress !== "0x0000000000000000000000000000000000000000") {
-                                try {
-                                    const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
-                                    tokenSymbol = await tokenContract.symbol();
-                                } catch (error) {
-                                    tokenSymbol = 'Unknown';
-                                }
-                            }
-
-                            claimableTokens.push({
-                                token: tokenAddress,
-                                amount: ethers.utils.formatEther(balance),
-                                symbol: tokenSymbol
-                            });
-                        }
-                    }
-
-                    // Update dashboard with claimable tokens
-                    updateDashboardWithClaimableTokens(claimableTokens);
-                    
-                    // Enable/disable withdraw button
-                    withdrawButton.disabled = claimableTokens.length === 0;
-
-                } catch (error) {
-                    console.error('Error fetching claimable tokens:', error);
-                    updateDashboardWithClaimableTokens([]);
-                    withdrawButton.disabled = true;
-                }
-            }
-
-            function updateDashboardWithClaimableTokens(claimableTokens) {
-                // Remove existing claimable token cards
-                const existingTokenCards = dashboardContainer.querySelectorAll('.claimable-token-card');
-                existingTokenCards.forEach(card => card.remove());
-
-                if (claimableTokens.length > 0) {
-                    noClaimableTokensCard.style.display = 'none';
-                    
-                    // Add cards for each claimable token
-                    claimableTokens.forEach(token => {
-                        const tokenCard = document.createElement('div');
-                        tokenCard.className = 'stat-card claimable-token-card';
-                        tokenCard.innerHTML = `
-                            <div class="stat-value">${parseFloat(token.amount).toFixed(4)}</div>
-                            <div class="stat-label">Claimable ${token.symbol}</div>
-                        `;
-                        
-                        // Insert after the description card
-                        const descriptionCard = dashboardContainer.querySelector('.dashboard-description');
-                        descriptionCard.insertAdjacentElement('afterend', tokenCard);
-                    });
-                } else {
-                    noClaimableTokensCard.style.display = 'flex';
-                }
-            }
-            
-            async function fetchAllHistory() {
-                allHistoryStatus.textContent = "Fetching all transactions...";
-                allHistoryTableBody.innerHTML = "";
-                
-                if (!userAddress) {
-                    allHistoryStatus.textContent = "Connect your wallet to see history.";
+                    showMessage("MetaMask is not installed. Please install it to use this app.", true);
                     return;
                 }
                 
-                const allEvents = [];
-                const descriptions = JSON.parse(localStorage.getItem('tipDescriptions') || '{}');
-                const recipientDescriptions = JSON.parse(localStorage.getItem(`recipientDescriptions_${userAddress.toLowerCase()}`) || '{}');
-
+                showMessage("Connecting to wallet...");
                 try {
-                    const tipSentFilter = tipJarContract.filters.TipSent();
-                    const sentLogs = await provider.getLogs({
-                        address: tipJarContract.address,
-                        topics: tipSentFilter.topics,
-                        fromBlock: 0
-                    });
+                    provider = new ethers.BrowserProvider(window.ethereum);
+                    const accounts = await provider.send("eth_requestAccounts", []);
+                    signer = await provider.getSigner();
+                    userAddress = accounts[0];
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                    connectBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Connected</span>
+                    `;
                     
-                    for (const log of sentLogs) {
-                        const parsedLog = tipJarContract.interface.parseLog(log);
-                        const block = await provider.getBlock(log.blockNumber);
-                        
-                        if (parsedLog.args.recipient.toLowerCase() === userAddress.toLowerCase() ||
-                            parsedLog.args.tipper.toLowerCase() === userAddress.toLowerCase()) {
-                            
-                            let tokenSymbol = 'PHRS';
-                            if (parsedLog.args.token !== "0x0000000000000000000000000000000000000000") {
-                                try {
-                                    const tokenContract = new ethers.Contract(parsedLog.args.token, ERC20_ABI, provider);
-                                    tokenSymbol = await tokenContract.symbol();
-                                } catch (error) {
-                                    tokenSymbol = 'Unknown';
-                                }
-                            }
-
-                            const type = parsedLog.args.recipient.toLowerCase() === userAddress.toLowerCase() ? 'Received' : 'Sent';
-                            
-                            // Get description - prioritize recipient descriptions for received tips
-                            let description = '';
-                            if (type === 'Received') {
-                                description = recipientDescriptions[log.transactionHash] || descriptions[log.transactionHash] || '';
-                            } else {
-                                description = descriptions[log.transactionHash] || '';
-                            }
-
-                            allEvents.push({
-                                from: parsedLog.args.tipper,
-                                to: parsedLog.args.recipient,
-                                token: tokenSymbol,
-                                amount: ethers.utils.formatEther(parsedLog.args.amount),
-                                timestamp: block.timestamp,
-                                txHash: log.transactionHash,
-                                description: description,
-                                type,
-                                blockNumber: log.blockNumber
-                            });
+                    // Set up event listeners for the contract
+                    contract.on('CalcInt', (user, op, a, b, result) => {
+                        if (user.toLowerCase() === userAddress.toLowerCase()) {
+                            displayPrevious.textContent = `${a.toString()} ${operations[op]} ${b.toString()} =`;
+                            displayCurrent.textContent = result.toString();
+                            currentNumber = result.toString();
+                            previousNumber = '';
+                            operation = null;
+                            waitingForNext = true;
+                            showMessage(`Calculation confirmed: ${op}`);
                         }
-                    }
-
-                    const withdrawnFilter = tipJarContract.filters.TipsWithdrawn(userAddress, null, null);
-                    const withdrawnLogs = await provider.getLogs({
-                        address: tipJarContract.address,
-                        topics: withdrawnFilter.topics,
-                        fromBlock: 0
                     });
 
-                    for (const log of withdrawnLogs) {
-                        const parsedLog = tipJarContract.interface.parseLog(log);
-                        const block = await provider.getBlock(log.blockNumber);
-                        
-                        let tokenSymbol = 'PHRS';
-                        if (parsedLog.args.token !== "0x0000000000000000000000000000000000000000") {
-                            try {
-                                const tokenContract = new ethers.Contract(parsedLog.args.token, ERC20_ABI, provider);
-                                tokenSymbol = await tokenContract.symbol();
-                            } catch (error) {
-                                tokenSymbol = 'Unknown';
-                            }
+                    contract.on('CalcFixed', (user, op, a, b, result) => {
+                        if (user.toLowerCase() === userAddress.toLowerCase()) {
+                            displayPrevious.textContent = `${formatFixed(a)} ${operations[op]} ${formatFixed(b)} =`;
+                            displayCurrent.textContent = formatFixed(result);
+                            currentNumber = formatFixed(result);
+                            previousNumber = '';
+                            operation = null;
+                            waitingForNext = true;
+                            showMessage(`Calculation confirmed: ${op}`);
                         }
+                    });
 
-                        allEvents.push({
-                            from: userAddress,
-                            to: 'Withdrawn',
-                            token: tokenSymbol,
-                            amount: ethers.utils.formatEther(parsedLog.args.amount),
-                            timestamp: block.timestamp,
-                            txHash: log.transactionHash,
-                            description: '',
-                            type: 'Withdrawn',
-                            blockNumber: log.blockNumber
-                        });
-                    }
-                    
-                    if (allEvents.length === 0) {
-                        allHistoryStatus.textContent = "No transactions found.";
+                } catch (err) {
+                    console.error("Failed to connect wallet:", err);
+                    showMessage("Failed to connect wallet. " + err.message, true);
+                }
+            };
+
+            // Function to handle number and operator clicks
+            const handleButtonClick = async (event) => {
+                const button = event.target;
+                const value = button.dataset.val;
+                const op = button.dataset.op;
+
+                if (value) {
+                    if (waitingForNext) {
+                        currentNumber = value;
+                        waitingForNext = false;
+                        // NO LONGER CLEARING THE PREVIOUS DISPLAY HERE
+                    } else if (currentNumber === '0' && value !== '.') {
+                        currentNumber = value;
+                    } else if (value === '.' && currentNumber.includes('.')) {
+                        // Do nothing if a decimal is already present
                         return;
                     }
-                    
-                    allHistoryStatus.textContent = "";
-
-                    // Sort by timestamp (newest first)
-                    allEvents.sort((a, b) => b.timestamp - a.timestamp);
-
-                    for (const event of allEvents) {
-                        const txHash = event.txHash;
-                        const explorerUrl = `${PHAROS_NETWORK_DETAILS.blockExplorerUrls[0]}/tx/${txHash}`;
-                        
-                        const newRow = document.createElement("tr");
-                        newRow.transactionData = event; // Store transaction data for modal
-
-                        const typeCell = document.createElement("td");
-                        typeCell.textContent = event.type;
-                        newRow.appendChild(typeCell);
-                        
-                        const amountCell = document.createElement("td");
-                        amountCell.textContent = `${parseFloat(event.amount).toFixed(4)} ${event.token}`;
-                        newRow.appendChild(amountCell);
-
-                        const partyCell = document.createElement("td");
-                        if (event.type === 'Received') {
-                            const partyAddress = event.from;
-                            const partyDisplay = `${partyAddress.substring(0, 6)}...${partyAddress.substring(38)}`;
-                            partyCell.innerHTML = `<a href="${PHAROS_NETWORK_DETAILS.blockExplorerUrls[0]}/address/${partyAddress}" target="_blank" class="party-address" data-address="${partyAddress}">${partyDisplay}</a>`;
-                        } else if (event.type === 'Sent') {
-                            const partyAddress = event.to;
-                            const partyDisplay = `${partyAddress.substring(0, 6)}...${partyAddress.substring(38)}`;
-                            partyCell.innerHTML = `<a href="${PHAROS_NETWORK_DETAILS.blockExplorerUrls[0]}/address/${partyAddress}" target="_blank" class="party-address" data-address="${partyAddress}">${partyDisplay}</a>`;
-                        } else if (event.type === 'Withdrawn') {
-                            partyCell.textContent = '-';
-                        }
-                        newRow.appendChild(partyCell);
-
-                        const txHashCell = document.createElement("td");
-                        txHashCell.innerHTML = `<a href="${explorerUrl}" target="_blank" class="explorer-link">${txHash.substring(0, 6)}...${txHash.substring(62)}</a>`;
-                        newRow.appendChild(txHashCell);
-                        
-                        allHistoryTableBody.appendChild(newRow);
+                    else {
+                        currentNumber += value;
                     }
-                } catch (error) {
-                    console.error("Error fetching all history:", error);
-                    allHistoryStatus.textContent = "Error fetching history.";
-                }
-            }
-
-            function clearDashboardData() {
-                updateDashboardWithClaimableTokens([]);
-                tipsReceivedCountDisplay.textContent = "0";
-                totalSentDisplay.textContent = "0";
-                withdrawButton.disabled = true;
-            }
-
-            function clearHistory() {
-                allHistoryTableBody.innerHTML = "";
-                allHistoryStatus.textContent = "Connect your wallet to see history.";
-            }
-
-            function setupEventListeners() {
-                tipButton.disabled = !userAddress;
-                tipButton.onclick = sendTip;
-                withdrawButton.disabled = !userAddress;
-                withdrawButton.onclick = withdrawTips;
-            }
-
-            // --- Core Transaction Functions ---
-            async function sendTip() {
-                if (!tipJarContract || !userAddress) {
-                    statusDiv.textContent = "Please connect your wallet first.";
-                    return;
+                } else if (op) {
+                    if (previousNumber && operation) {
+                        // If an operation is already pending, perform it first
+                        await performCalculation();
+                    }
+                    previousNumber = currentNumber;
+                    operation = op;
+                    waitingForNext = true;
+                    displayPrevious.textContent = `${previousNumber} ${operations[operation]}`;
                 }
 
-                const recipient = recipientInput.value;
-                const amount = amountInput.value;
-                const description = descriptionInput.value.trim();
-                
-                selfTipMessage.style.display = 'none';
-                statusDiv.textContent = '';
-                
-                if (userAddress && recipient.toLowerCase() === userAddress.toLowerCase()) {
-                    selfTipMessage.textContent = "You can't tip yourself, silly!";
-                    selfTipMessage.style.display = 'block';
-                    return;
-                }
+                displayCurrent.textContent = currentNumber;
+            };
 
-                if (!ethers.utils.isAddress(recipient)) {
-                    statusDiv.textContent = "Invalid recipient address.";
+            // Function to handle equals button click
+            const performCalculation = async () => {
+                if (!contract) {
+                    showMessage("Please connect your wallet first.", true);
                     return;
                 }
                 
-                if (parseFloat(amount) <= 0) {
-                    statusDiv.textContent = "Amount must be greater than zero.";
+                if (!previousNumber || !operation || !currentNumber) {
+                    showMessage("Invalid calculation.", true);
                     return;
                 }
+                
+                showMessage("Sending transaction...");
 
-                statusDiv.textContent = "Preparing transaction...";
                 try {
                     let tx;
-                    if (selectedTokenAddress === "0x0000000000000000000000000000000000000000") {
-                        tx = await tipJarContract.sendTip(recipient, "0x0000000000000000000000000000000000000000", {
-                            value: ethers.utils.parseEther(amount)
-                        });
-                        statusDiv.textContent = "Transaction sent. Awaiting confirmation...";
+                    if (["fAdd", "fSub", "fMul", "fDiv"].includes(operation)) {
+                        const scaledA = ethers.parseUnits(previousNumber, 18);
+                        const scaledB = ethers.parseUnits(currentNumber, 18);
+                        tx = await contract[operation](scaledA, scaledB);
                     } else {
-                        const tokenAddress = selectedTokenAddress;
-                        
-                        const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
-                        const tokenDecimals = await tokenContract.decimals();
-                        const amountWei = ethers.utils.parseUnits(amount, tokenDecimals);
-
-                        // Check allowance and approve if necessary
-                        const allowance = await tokenContract.allowance(userAddress, contractAddress);
-                        
-                        if (allowance.lt(amountWei)) {
-                            statusDiv.textContent = "ERC20 tipping requires an approval transaction first...";
-                            const approveTx = await tokenContract.approve(contractAddress, ethers.constants.MaxUint256);
-                            await approveTx.wait();
-                        }
-                        
-                        tx = await tipJarContract.sendTip(recipient, tokenAddress);
-                        statusDiv.textContent = "Transaction sent. Awaiting confirmation...";
+                        tx = await contract[operation](previousNumber, currentNumber);
                     }
-                    
-                    await tx.wait();
-                    
-                    // Store description in localStorage if provided
-                    if (description) {
-                        const descriptions = JSON.parse(localStorage.getItem('tipDescriptions') || '{}');
-                        descriptions[tx.hash] = description;
-                        localStorage.setItem('tipDescriptions', JSON.stringify(descriptions));
-                        
-                        // Also store by recipient for cross-user access
-                        const recipientDescriptions = JSON.parse(localStorage.getItem(`recipientDescriptions_${recipient.toLowerCase()}`) || '{}');
-                        recipientDescriptions[tx.hash] = description;
-                        localStorage.setItem(`recipientDescriptions_${recipient.toLowerCase()}`, JSON.stringify(recipientDescriptions));
+
+                    await tx.wait(); // Wait for the transaction to be mined
+                    showMessage("Transaction submitted. Waiting for result...");
+                } catch (err) {
+                    console.error("Calculation failed:", err);
+                    let errorMessage = "Calculation failed. Check console for details.";
+                    if (err.message.includes("revert")) {
+                        errorMessage = "Transaction reverted. Check your inputs (e.g., division by zero).";
                     }
-                    
-                    statusDiv.textContent = "Tip sent successfully!";
-                    recipientInput.value = "";
-                    amountInput.value = "";
-                    descriptionInput.value = "";
-                    
-                    fetchDataAndHistory();
-                } catch (error) {
-                    console.error(error);
-                    statusDiv.textContent = `Transaction failed: ${error.message}`;
+                    showMessage(errorMessage, true);
                 }
-            }
-            
-            async function withdrawTips() {
-                if (!tipJarContract || !userAddress) {
-                    dashboardStatusDiv.textContent = "Please connect your wallet first.";
-                    return;
+            };
+
+            // Function to clear the calculator state
+            const clearCalculator = () => {
+                currentNumber = '0';
+                previousNumber = '';
+                operation = null;
+                waitingForNext = false;
+                displayCurrent.textContent = '0';
+                displayPrevious.textContent = '';
+            };
+
+            // Function to handle backspace
+            const backspace = () => {
+                if (currentNumber.length > 1) {
+                    currentNumber = currentNumber.slice(0, -1);
+                } else {
+                    currentNumber = '0';
                 }
-                
-                dashboardStatusDiv.textContent = "Preparing withdrawal transaction...";
-                try {
-                    // This function only withdraws native tokens (PHRS)
-                    const tx = await tipJarContract.withdrawTips("0x0000000000000000000000000000000000000000");
-                    dashboardStatusDiv.textContent = "Withdrawing PHRS... Transaction sent. Awaiting confirmation...";
-                    await tx.wait();
-                    dashboardStatusDiv.textContent = "Native tokens withdrawn successfully!";
-                    
-                    // Refresh balances after withdrawal
-                    setTimeout(() => {
-                        fetchDataAndHistory();
-                        dashboardStatusDiv.textContent = '';
-                    }, 2000);
-                } catch (error) {
-                    console.error(error);
-                    dashboardStatusDiv.textContent = `Withdrawal failed: ${error.message}`;
-                }
-            }
+                displayCurrent.textContent = currentNumber;
+            };
 
-            // --- Initialization ---
-            const lastPage = localStorage.getItem(PAGE_STORAGE_KEY);
-            if (lastPage) {
-                showPage(lastPage);
-            } else {
-                showPage('dashboard-page');
-            }
+            // Event listeners
+            connectBtn.addEventListener('click', connectWallet);
+            calculateBtn.addEventListener('click', performCalculation);
+            clearBtn.addEventListener('click', clearCalculator);
+            backspaceBtn.addEventListener('click', backspace);
 
-            if (initializeContract()) {
-                checkIfWalletIsConnected();
-                loadCustomTokens();
-            }
-
-            // Listen for Metamask account/chain changes
-            if (window.ethereum) {
-                window.ethereum.on('accountsChanged', (accounts) => {
-                    if (accounts.length > 0) {
-                        userAddress = accounts[0];
-                        walletDisplays.forEach(el => el.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38));
-                        connectDisconnectBtns.forEach(btn => btn.innerText = "Disconnect");
-                        fetchDataAndHistory();
-                        setupEventListeners();
-                    } else {
-                        disconnectWallet();
-                    }
-                });
-
-                window.ethereum.on('chainChanged', (chainId) => {
-                    window.location.reload();
-                });
-            }
-        });
+            allButtons.forEach(button => {
+                button.addEventListener('click', handleButtonClick);
+            });
+        })();
     </script>
 </body>
 </html>
